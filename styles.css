@@ -109,8 +109,6 @@ button:hover {
 
 .editor-container {
     width: 50%; /* Default width */
-    display: flex;
-    flex-direction: column;
 }
 
 .preview-container {
@@ -163,7 +161,6 @@ button:hover {
     border-bottom: 3px solid var(--light-accent);
 }
 
-/* Fix for editor height issues */
 .editor-panels {
     flex: 1;
     position: relative;
@@ -174,22 +171,14 @@ button:hover {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     display: none;
     overflow: hidden; /* Prevent panel from growing */
 }
 
 .panel.active {
     display: block;
-}
-
-/* Make CodeMirror fill the available space with scrolling */
-.CodeMirror {
-    height: 100% !important; /* Fill panel height but don't grow */
-    font-family: 'Fira Code', 'Courier New', monospace;
-    font-size: 14px;
-    overflow: auto !important; /* Ensure scrolling works */
 }
 
 .resize-handle {
@@ -261,9 +250,10 @@ button:hover {
 
 /* CodeMirror customizations */
 .CodeMirror {
-    height: 100%;
+    height: 100% !important; /* Fill panel height but don't grow */
     font-family: 'Fira Code', 'Courier New', monospace;
     font-size: 14px;
+    overflow: auto !important; /* Ensure scrolling works */
 }
 
 /* Modal styles */
@@ -342,10 +332,160 @@ button:hover {
     border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
-/* Web share button */
-.web-share-btn {
-    width: 100%;
-    margin-top: 10px;
+/* File Explorer Styles */
+.container.advanced-mode {
+    display: flex;
+}
+
+.file-explorer {
+    width: 200px;
+    background-color: var(--dark-secondary);
+    border-right: 1px solid var(--dark-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.light-mode .file-explorer {
+    background-color: var(--light-secondary);
+    border-right: 1px solid var(--light-border);
+}
+
+.file-explorer-header {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--dark-border);
+}
+
+.light-mode .file-explorer-header {
+    border-bottom: 1px solid var(--light-border);
+}
+
+.file-explorer-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.small-btn {
+    background: transparent;
+    color: var(--dark-text);
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+.light-mode .small-btn {
+    color: var(--light-text);
+}
+
+.small-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.light-mode .small-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.file-list-container {
+    flex: 1;
+    overflow-y: auto;
+}
+
+#file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#file-list li {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    transition: background-color 0.2s;
+    position: relative;
+}
+
+#file-list li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.light-mode #file-list li:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+#file-list li.active {
+    background-color: rgba(0, 120, 215, 0.2);
+}
+
+.light-mode #file-list li.active {
+    background-color: rgba(0, 120, 215, 0.1);
+}
+
+#file-list li i {
+    width: 16px;
+    text-align: center;
+}
+
+#file-list li i.fa-html5 {
+    color: #e44d26;
+}
+
+#file-list li i.fa-css3-alt {
+    color: #264de4;
+}
+
+#file-list li i.fa-js {
+    color: #f7df1e;
+}
+
+.file-actions {
+    position: absolute;
+    right: 5px;
+    display: none;
+    gap: 5px;
+}
+
+#file-list li:hover .file-actions {
+    display: flex;
+}
+
+.file-action-btn {
+    background: transparent;
+    color: var(--dark-text);
+    font-size: 11px;
+    padding: 2px 4px;
+    opacity: 0.7;
+}
+
+.file-action-btn:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Adjust editor container for advanced mode */
+.container.advanced-mode .editor-container {
+    flex: 1;
+}
+
+.container.advanced-mode .editor-tabs {
+    display: none;
+}
+
+.container.advanced-mode .editor-panels {
+    height: 100%;
+}
+
+.container.advanced-mode .panel {
+    display: none;
+}
+
+.container.advanced-mode .panel.active {
+    display: block;
 }
 
 /* Auto-save indicator */
@@ -363,6 +503,10 @@ button:hover {
     z-index: 9999;
 }
 
+.auto-save-indicator.show {
+    opacity: 1;
+}
+
 /* Notification system */
 .notification {
     position: fixed;
@@ -375,6 +519,7 @@ button:hover {
     font-size: 14px;
     z-index: 10000;
     transition: opacity 0.3s, transform 0.3s;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
 .notification.error {
@@ -391,6 +536,23 @@ button:hover {
 
 .notification.default {
     background-color: rgba(0, 123, 255, 0.9);
+}
+
+/* Resizing state styling */
+body.resizing {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    cursor: col-resize !important;
+    pointer-events: none;
+}
+
+body.resizing .resize-handle {
+    pointer-events: auto !important;
+    background-color: var(--dark-accent) !important;
+}
+
+body.resizing * {
+    cursor: inherit !important;
 }
 
 /* Mobile and responsive styles */
@@ -450,23 +612,15 @@ button:hover {
     body.resizing {
         cursor: row-resize !important;
     }
-}
-
-/* Resizing state styling */
-body.resizing {
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    cursor: col-resize !important;
-    pointer-events: none;
-}
-
-body.resizing .resize-handle {
-    pointer-events: auto !important;
-    background-color: var(--dark-accent) !important;
-}
-
-body.resizing * {
-    cursor: inherit !important;
+    
+    /* Handle file explorer in mobile */
+    .file-explorer {
+        width: 180px;
+    }
+    
+    .container.advanced-mode {
+        flex-direction: row;
+    }
 }
 
 /* iPad specific enhancements */
@@ -624,6 +778,18 @@ body.resizing * {
     min-width: 44px;
 }
 
+/* Fix for iOS Safari 100vh issue */
+@supports (-webkit-touch-callout: none) {
+    body, .modal {
+        height: -webkit-fill-available;
+    }
+    
+    .container {
+        height: calc(100vh - var(--header-height));
+        height: calc((var(--vh, 1vh) * 100) - var(--header-height));
+    }
+}
+
 /* Custom viewport height for mobile browsers */
 @supports (height: 100dvh) {
     body, .modal {
@@ -645,108 +811,20 @@ body.resizing * {
     line-height: 1.5;
 }
 
-/* Accessibility improvements */
-button:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 2px;
-}
-
-.light-mode button:focus-visible {
-    outline-color: #333;
-}
-
-/* Improve contrast for better readability */
-.light-mode .tab-btn:not(.active) {
-    color: #444;
-}
-
-.dark-mode .tab-btn:not(.active) {
-    color: #ccc;
-}
-
-/* Fix some CodeMirror issues with mobile focus */
-.CodeMirror-focused {
-    z-index: 1;
-}
-
 /* Animation for notifications */
 @keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(-20px) translateX(-50%);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) translateX(-50%);
     }
 }
 
 .notification {
     animation: slideDown 0.3s ease-out;
-}
-
-/* Improved mobile editor experience */
-@media (max-width: 480px) {
-    .header {
-        padding: 0 10px;
-    }
-    
-    .logo h1 {
-        font-size: 20px;
-    }
-    
-    .actions {
-        gap: 3px;
-    }
-    
-    button {
-        padding: 6px;
-        min-width: 36px;
-    }
-    
-    button i {
-        font-size: 16px;
-    }
-    
-    .tab-btn {
-        padding: 8px 10px;
-        font-size: 13px;
-    }
-    
-    /* Adjust modal for very small screens */
-    .modal-content {
-        width: 90%;
-        margin: 25% auto;
-        padding: 15px;
-    }
-}
-
-/* Fix for iOS Safari 100vh issue */
-@supports (-webkit-touch-callout: none) {
-    body, .modal {
-        height: -webkit-fill-available;
-    }
-    
-    .container {
-        height: calc(100vh - var(--header-height));
-        height: calc((var(--vh, 1vh) * 100) - var(--header-height));
-    }
-}
-
-/* Reset layout button (if used) */
-.reset-layout-btn {
-    background-color: transparent;
-    border: 1px solid var(--dark-accent);
-    color: var(--dark-text);
-}
-
-.light-mode .reset-layout-btn {
-    border: 1px solid var(--light-accent);
-    color: var(--light-text);
-}
-
-.reset-layout-btn:hover {
-    background-color: rgba(0, 120, 215, 0.1);
 }
 
 /* Print styles (in case someone tries to print) */
@@ -756,16 +834,16 @@ button:focus-visible {
         color: black;
     }
     
-    .editor-container, header, .resize-handle {
-        display: none;
+    .editor-container, header, .resize-handle, .file-explorer {
+        display: none !important;
     }
     
     .container, .preview-container {
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        width: 100% !important;
+        height: 100% !important;
     }
     
     #preview {
