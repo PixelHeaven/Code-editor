@@ -94,22 +94,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Run code
+    // Run code - FIXED VERSION
     function updatePreview() {
         const html = htmlEditor.getValue();
         const css = cssEditor.getValue();
         const js = jsEditor.getValue();
         
+        // Get the iframe
         const previewFrame = document.getElementById('preview');
-        const preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
         
-        preview.open();
-        preview.write(`
-            ${html}
-            <style>${css}</style>
-            <script>${js}<\/script>
-        `);
-        preview.close();
+        // Clear the current iframe by removing and re-creating it
+        const oldFrame = previewFrame;
+        const newFrame = document.createElement('iframe');
+        newFrame.id = 'preview';
+        // Set sandbox attribute to allow JavaScript execution but maintain security
+        newFrame.setAttribute('sandbox', 'allow-scripts allow-modals allow-same-origin');
+        oldFrame.parentNode.replaceChild(newFrame, oldFrame);
+        
+        // Write to the new iframe
+        setTimeout(() => {
+            const preview = newFrame.contentDocument || newFrame.contentWindow.document;
+            preview.open();
+            preview.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>${css}</style>
+                </head>
+                <body>
+                    ${html}
+                    <script>${js}<\/script>
+                </body>
+                </html>
+            `);
+            preview.close();
+        }, 50);
     }
 
     document.getElementById('run-btn').addEventListener('click', updatePreview);
@@ -472,6 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Double tap prevention for iOS Safari
+    let lastTap = 0;
     document.addEventListener('touchend', function(e) {
         const now = Date.now();
         const DOUBLE_TAP_THRESHOLD = 300;
@@ -482,8 +502,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         lastTap = now;
     }, { passive: false });
-    
-    let lastTap = 0;
 
     // Offline support notification
     window.addEventListener('online', updateOnlineStatus);
@@ -510,28 +528,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 5000);
         }
     }
-
-    // Add CSS for offline notification
-    const style = document.createElement('style');
-    style.textContent = `
-        .offline-notification {
-            position: fixed;
-            bottom: -60px;
-            left: 0;
-            right: 0;
-            background-color: #ff9800;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            z-index: 9999;
-            transition: bottom 0.5s;
-        }
-        
-        .offline-notification.show {
-            bottom: 0;
-        }
-    `;
-    document.head.appendChild(style);
 
     // Initialize Editors for iPad
     function setupForTouchDevices() {
@@ -580,55 +576,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     setupForTouchDevices();
-    
-    // Add CSS for touch hint
-    const touchStyle = document.createElement('style');
-    touchStyle.textContent = `
-        .touch-hint {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .hint-content {
-            background-color: var(--dark-secondary);
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 80%;
-            color: var(--dark-text);
-        }
-        
-        .light-mode .hint-content {
-            background-color: var(--light-secondary);
-            color: var(--light-text);
-        }
-        
-        .hint-content h3 {
-            margin-top: 0;
-        }
-        
-        .hint-content ul {
-            margin-bottom: 20px;
-            padding-left: 20px;
-        }
-        
-        #close-hint {
-            width: 100%;
-            padding: 10px;
-        }
-        
-        .touch-device .tab-btn,
-        .touch-device button {
-            min-height: 44px;
-            min-width: 44px;
-        }
-    `;
-    document.head.appendChild(touchStyle);
+
+    // Run the code once when the page loads
+    setTimeout(updatePreview, 1000);
 });
