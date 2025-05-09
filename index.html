@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TouchCode Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dark-mode">
+    <header>
+        <div class="logo">
+            <h1>TouchCode</h1>
+        </div>
+        <div class="actions">
+            <button id="run-btn"><i class="fas fa-play"></i> Run</button>
+            <button id="save-btn"><i class="fas fa-save"></i> Save</button>
+            <button id="load-btn"><i class="fas fa-folder-open"></i> Load</button>
+            <button id="share-btn"><i class="fas fa-share-alt"></i> Share</button>
+            <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="editor-container">
+            <div class="editor-tabs">
+                <button class="tab-btn active" data-panel="html">HTML</button>
+                <button class="tab-btn" data-panel="css">CSS</button>
+                <button class="tab-btn" data-panel="js">JS</button>
+            </div>
+            <div class="editor-panels">
+                <div class="panel active" id="html-panel">
+                    <textarea id="html-editor"></textarea>
+                </div>
+                <div class="panel" id="css-panel">
+                    <textarea id="css-editor"></textarea>
+                </div>
+                <div class="panel" id="js-panel">
+                    <textarea id="js-editor"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="resize-handle"></div>
+        <div class="preview-container">
+            <h3>Preview <button id="refresh-btn"><i class="fas fa-sync-alt"></i></button></h3>
+            <iframe id="preview" sandbox="allow-scripts"></iframe>
+        </div>
+    </div>
+
+    <div id="saved-snippets-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Saved Snippets</h2>
+            <ul id="snippets-list"></ul>
+        </div>
+    </div>
+
+    <div id="share-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Share Your Code</h2>
+            <p>Copy this link to share your code:</p>
+            <div class="share-link-container">
+                <input type="text" id="share-link" readonly>
+                <button id="copy-link-btn">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
