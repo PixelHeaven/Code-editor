@@ -21,12 +21,31 @@
             <button id="run-btn"><i class="fas fa-play"></i> Run</button>
             <button id="save-btn"><i class="fas fa-save"></i> Save</button>
             <button id="load-btn"><i class="fas fa-folder-open"></i> Load</button>
-            <button id="share-btn"><i class="fas fa-share-alt"></i> Share</button>
+            <button id="advanced-editor-btn"><i class="fas fa-code"></i> Advanced</button>
             <button id="theme-toggle"><i class="fas fa-moon"></i></button>
         </div>
     </header>
 
     <div class="container">
+        <div class="file-explorer" style="display: none;">
+            <div class="file-explorer-header">
+                <h3>Files</h3>
+                <button id="new-file-btn" class="small-btn"><i class="fas fa-plus"></i></button>
+            </div>
+            <div class="file-list-container">
+                <ul id="file-list">
+                    <li class="file active" data-file="index.html">
+                        <i class="fas fa-html5"></i> index.html
+                    </li>
+                    <li class="file" data-file="styles.css">
+                        <i class="fas fa-css3-alt"></i> styles.css
+                    </li>
+                    <li class="file" data-file="script.js">
+                        <i class="fas fa-js"></i> script.js
+                    </li>
+                </ul>
+            </div>
+        </div>
         <div class="editor-container">
             <div class="editor-tabs">
                 <button class="tab-btn active" data-panel="html">HTML</button>
