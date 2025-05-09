@@ -29,6 +29,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    overscroll-behavior: none; /* Prevent pull-to-refresh on mobile */
 }
 
 body.dark-mode {
@@ -94,14 +95,35 @@ button:hover {
     display: flex;
     flex: 1;
     overflow: hidden;
+    position: relative;
+    height: calc(100vh - var(--header-height));
+}
+
+.editor-container, .preview-container {
+    height: 100%; /* Same fixed height */
+    overflow: hidden;
+    min-width: 20%;
+    display: flex;
+    flex-direction: column;
 }
 
 .editor-container {
-    flex: 1;
+    width: 50%; /* Default width */
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    min-width: 200px;
+}
+
+.preview-container {
+    width: 50%; /* Default width */
+    display: flex;
+    flex-direction: column;
+    background-color: var(--dark-secondary);
+    border-left: 1px solid var(--dark-border);
+}
+
+.light-mode .preview-container {
+    background-color: var(--light-secondary);
+    border-left: 1px solid var(--light-border);
 }
 
 .editor-tabs {
@@ -141,6 +163,7 @@ button:hover {
     border-bottom: 3px solid var(--light-accent);
 }
 
+/* Fix for editor height issues */
 .editor-panels {
     flex: 1;
     position: relative;
@@ -154,43 +177,52 @@ button:hover {
     width: 100%;
     height: 100%;
     display: none;
+    overflow: hidden; /* Prevent panel from growing */
 }
 
 .panel.active {
     display: block;
 }
 
-.resize-handle {
-    width: 10px;
-    background-color: var(--dark-secondary);
-    cursor: col-resize;
-    transition: background-color 0.2s;
+/* Make CodeMirror fill the available space with scrolling */
+.CodeMirror {
+    height: 100% !important; /* Fill panel height but don't grow */
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 14px;
+    overflow: auto !important; /* Ensure scrolling works */
 }
 
-.light-mode .resize-handle {
-    background-color: var(--light-border);
+.resize-handle {
+    width: 12px;
+    background-color: rgba(128, 128, 128, 0.3);
+    cursor: col-resize;
+    transition: background-color 0.2s;
+    z-index: 10;
+    position: relative;
 }
 
 .resize-handle:hover {
     background-color: var(--dark-accent);
 }
 
+.resize-handle::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 35px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+}
+
+.light-mode .resize-handle {
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
 .light-mode .resize-handle:hover {
     background-color: var(--light-accent);
-}
-
-.preview-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 200px;
-    background-color: var(--dark-secondary);
-    border-left: 1px solid var(--dark-border);
-}
-
-.light-mode .preview-container {
-    background-color: var(--light-secondary);
-    border-left: 1px solid var(--light-border);
 }
 
 .preview-container h3 {
@@ -221,8 +253,10 @@ button:hover {
 #preview {
     flex: 1;
     width: 100%;
+    height: 100%;
     border: none;
     background-color: white;
+    overflow: auto;
 }
 
 /* CodeMirror customizations */
@@ -308,31 +342,91 @@ button:hover {
     border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
-/* Responsive styles */
+/* Web share button */
+.web-share-btn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Auto-save indicator */
+.auto-save-indicator {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 120, 215, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    transition: opacity 0.3s;
+    opacity: 0;
+    z-index: 9999;
+}
+
+/* Notification system */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    z-index: 10000;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.notification.error {
+    background-color: rgba(220, 53, 69, 0.9);
+}
+
+.notification.success {
+    background-color: rgba(40, 167, 69, 0.9);
+}
+
+.notification.warning {
+    background-color: rgba(255, 193, 7, 0.9);
+}
+
+.notification.default {
+    background-color: rgba(0, 123, 255, 0.9);
+}
+
+/* Mobile and responsive styles */
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
     }
     
-    .resize-handle {
-        height: 10px;
-        width: 100%;
-        cursor: row-resize;
-    }
-    
-    .editor-container,
-    .preview-container {
+    .editor-container, .preview-container {
+        width: 100% !important;
         min-height: 200px;
-        width: 100%;
+    }
+    
+    .editor-container {
+        height: 60%;
     }
     
     .preview-container {
+        height: 40%;
         border-left: none;
         border-top: 1px solid var(--dark-border);
     }
     
     .light-mode .preview-container {
         border-top: 1px solid var(--light-border);
+    }
+    
+    .resize-handle {
+        height: 12px;
+        width: 100%;
+        cursor: row-resize;
+    }
+    
+    .resize-handle::after {
+        width: 35px;
+        height: 4px;
     }
     
     .actions {
@@ -351,6 +445,28 @@ button:hover {
     button span {
         display: none;
     }
+    
+    /* Mobile resizing cursor */
+    body.resizing {
+        cursor: row-resize !important;
+    }
+}
+
+/* Resizing state styling */
+body.resizing {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    cursor: col-resize !important;
+    pointer-events: none;
+}
+
+body.resizing .resize-handle {
+    pointer-events: auto !important;
+    background-color: var(--dark-accent) !important;
+}
+
+body.resizing * {
+    cursor: inherit !important;
 }
 
 /* iPad specific enhancements */
@@ -375,6 +491,25 @@ button:hover {
         max-height: 80vh;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Larger resize handle for touch */
+    .resize-handle {
+        width: 20px;
+    }
+    
+    .resize-handle::after {
+        width: 6px;
+    }
+    
+    @media (max-width: 768px) {
+        .resize-handle {
+            height: 20px;
+        }
+        
+        .resize-handle::after {
+            height: 6px;
+        }
     }
 }
 
@@ -428,6 +563,7 @@ button:hover {
     padding: 12px;
     z-index: 9999;
     transition: bottom 0.5s;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .offline-notification.show {
@@ -454,6 +590,7 @@ button:hover {
     border-radius: 8px;
     max-width: 80%;
     color: var(--dark-text);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .light-mode .hint-content {
@@ -463,6 +600,7 @@ button:hover {
 
 .hint-content h3 {
     margin-top: 0;
+    margin-bottom: 15px;
 }
 
 .hint-content ul {
@@ -470,13 +608,170 @@ button:hover {
     padding-left: 20px;
 }
 
+.hint-content li {
+    margin-bottom: 8px;
+}
+
 #close-hint {
     width: 100%;
     padding: 10px;
+    margin-top: 10px;
 }
 
 .touch-device .tab-btn,
 .touch-device button {
     min-height: 44px;
     min-width: 44px;
+}
+
+/* Custom viewport height for mobile browsers */
+@supports (height: 100dvh) {
+    body, .modal {
+        height: 100dvh;
+    }
+}
+
+/* Error display in preview */
+#preview .error-display {
+    background-color: #ffeeee;
+    color: #dd0000;
+    border: 1px solid #ffaaaa;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Accessibility improvements */
+button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.light-mode button:focus-visible {
+    outline-color: #333;
+}
+
+/* Improve contrast for better readability */
+.light-mode .tab-btn:not(.active) {
+    color: #444;
+}
+
+.dark-mode .tab-btn:not(.active) {
+    color: #ccc;
+}
+
+/* Fix some CodeMirror issues with mobile focus */
+.CodeMirror-focused {
+    z-index: 1;
+}
+
+/* Animation for notifications */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notification {
+    animation: slideDown 0.3s ease-out;
+}
+
+/* Improved mobile editor experience */
+@media (max-width: 480px) {
+    .header {
+        padding: 0 10px;
+    }
+    
+    .logo h1 {
+        font-size: 20px;
+    }
+    
+    .actions {
+        gap: 3px;
+    }
+    
+    button {
+        padding: 6px;
+        min-width: 36px;
+    }
+    
+    button i {
+        font-size: 16px;
+    }
+    
+    .tab-btn {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    /* Adjust modal for very small screens */
+    .modal-content {
+        width: 90%;
+        margin: 25% auto;
+        padding: 15px;
+    }
+}
+
+/* Fix for iOS Safari 100vh issue */
+@supports (-webkit-touch-callout: none) {
+    body, .modal {
+        height: -webkit-fill-available;
+    }
+    
+    .container {
+        height: calc(100vh - var(--header-height));
+        height: calc((var(--vh, 1vh) * 100) - var(--header-height));
+    }
+}
+
+/* Reset layout button (if used) */
+.reset-layout-btn {
+    background-color: transparent;
+    border: 1px solid var(--dark-accent);
+    color: var(--dark-text);
+}
+
+.light-mode .reset-layout-btn {
+    border: 1px solid var(--light-accent);
+    color: var(--light-text);
+}
+
+.reset-layout-btn:hover {
+    background-color: rgba(0, 120, 215, 0.1);
+}
+
+/* Print styles (in case someone tries to print) */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .editor-container, header, .resize-handle {
+        display: none;
+    }
+    
+    .container, .preview-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    #preview {
+        border: none;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
 }
