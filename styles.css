@@ -1,0 +1,418 @@
+:root {
+    --dark-bg: #1e1e1e;
+    --dark-secondary: #2d2d2d;
+    --dark-text: #f8f8f8;
+    --dark-border: #444;
+    --dark-accent: #0078d7;
+    
+    --light-bg: #f5f5f5;
+    --light-secondary: #ffffff;
+    --light-text: #333333;
+    --light-border: #ddd;
+    --light-accent: #0078d7;
+    
+    --header-height: 60px;
+    --border-radius: 4px;
+    --transition-speed: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+body.dark-mode {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+body.light-mode {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+}
+
+header {
+    height: var(--header-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background-color: var(--dark-secondary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.light-mode header {
+    background-color: var(--light-secondary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0078d7;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    background-color: var(--dark-accent);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #0066b8;
+}
+
+.light-mode button {
+    background-color: var(--light-accent);
+}
+
+.container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.editor-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 200px;
+}
+
+.editor-tabs {
+    display: flex;
+    background-color: var(--dark-secondary);
+    border-bottom: 1px solid var(--dark-border);
+}
+
+.light-mode .editor-tabs {
+    background-color: var(--light-secondary);
+    border-bottom: 1px solid var(--light-border);
+}
+
+.tab-btn {
+    background: none;
+    color: var(--dark-text);
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    border-right: 1px solid var(--dark-border);
+}
+
+.light-mode .tab-btn {
+    color: var(--light-text);
+    border-right: 1px solid var(--light-border);
+}
+
+.tab-btn.active {
+    background-color: var(--dark-bg);
+    border-bottom: 3px solid var(--dark-accent);
+}
+
+.light-mode .tab-btn.active {
+    background-color: var(--light-bg);
+    border-bottom: 3px solid var(--light-accent);
+}
+
+.editor-panels {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.panel.active {
+    display: block;
+}
+
+.resize-handle {
+    width: 10px;
+    background-color: var(--dark-secondary);
+    cursor: col-resize;
+    transition: background-color 0.2s;
+}
+
+.light-mode .resize-handle {
+    background-color: var(--light-border);
+}
+
+.resize-handle:hover {
+    background-color: var(--dark-accent);
+}
+
+.light-mode .resize-handle:hover {
+    background-color: var(--light-accent);
+}
+
+.preview-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    background-color: var(--dark-secondary);
+    border-left: 1px solid var(--dark-border);
+}
+
+.light-mode .preview-container {
+    background-color: var(--light-secondary);
+    border-left: 1px solid var(--light-border);
+}
+
+.preview-container h3 {
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--dark-border);
+}
+
+.light-mode .preview-container h3 {
+    border-bottom: 1px solid var(--light-border);
+}
+
+#refresh-btn {
+    background: transparent;
+    color: var(--dark-text);
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.light-mode #refresh-btn {
+    color: var(--light-text);
+}
+
+#preview {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background-color: white;
+}
+
+/* CodeMirror customizations */
+.CodeMirror {
+    height: 100%;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 14px;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: var(--dark-secondary);
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    max-width: 500px;
+    position: relative;
+}
+
+.light-mode .modal-content {
+    background-color: var(--light-secondary);
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+#snippets-list {
+    list-style-type: none;
+    margin-top: 15px;
+}
+
+#snippets-list li {
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: var(--dark-bg);
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.light-mode #snippets-list li {
+    background-color: var(--light-bg);
+}
+
+.share-link-container {
+    display: flex;
+    margin-top: 15px;
+}
+
+#share-link {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid var(--dark-border);
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+.light-mode #share-link {
+    border: 1px solid var(--light-border);
+    background-color: var(--light-bg);
+    color: var(--light-text);
+}
+
+#copy-link-btn {
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+/* Responsive styles */
+/* Continuing responsive styles */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .resize-handle {
+        height: 10px;
+        width: 100%;
+        cursor: row-resize;
+    }
+    
+    .editor-container,
+    .preview-container {
+        min-height: 200px;
+        width: 100%;
+    }
+    
+    .preview-container {
+        border-left: none;
+        border-top: 1px solid var(--dark-border);
+    }
+    
+    .light-mode .preview-container {
+        border-top: 1px solid var(--light-border);
+    }
+    
+    .actions {
+        gap: 5px;
+    }
+    
+    button {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    button i {
+        margin-right: 0;
+    }
+    
+    button span {
+        display: none;
+    }
+}
+
+/* iPad specific enhancements */
+@media (pointer: coarse) {
+    .tab-btn, button {
+        padding: 12px 16px;
+        font-size: 16px;
+    }
+    
+    .CodeMirror {
+        font-size: 16px;
+    }
+    
+    /* Increase touch targets */
+    .close {
+        font-size: 30px;
+        padding: 10px;
+    }
+    
+    /* Add some space for better touch scrolling */
+    .modal-content {
+        max-height: 80vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Touch-friendly scrollbars */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--dark-accent);
+    border-radius: 4px;
+}
+
+.light-mode ::-webkit-scrollbar-track {
+    background: var(--light-secondary);
+}
+
+.light-mode ::-webkit-scrollbar-thumb {
+    background: var(--light-accent);
+}
+
+/* Loading spinner */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
